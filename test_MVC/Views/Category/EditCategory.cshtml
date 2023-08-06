@@ -1,0 +1,22 @@
+@model CategoryModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Редактирование категории</title>
+</head>
+<body>
+    <h1>Редактирование категории</h1>
+
+    <form asp-controller="Category" asp-action="EditCategory" asp-route-id="@Model.Id" method="post">
+        <div class="form-group">
+            <label for="categoryName">Наименование категории:</label>
+            <input type="text" id="categoryName" name="Name" class="form-control" value="@Model.Name" />
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+
+    <a asp-controller="Category" asp-action="Index" class="btn btn-secondary">Отмена</a>
+
+</body>
+</html>

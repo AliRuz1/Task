@@ -1,0 +1,22 @@
+@model CategoryModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Добавление категории</title>
+</head>
+<body>
+    <h1>Добавление категории</h1>
+
+    <form asp-controller="Category" asp-action="AddCategory" method="post">
+        <div class="form-group">
+            <label for="categoryName">Наименование категории:</label>
+            <input type="text" id="categoryName" name="Name" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+
+    <a asp-controller="Category" asp-action="Index" class="btn btn-secondary">Отмена</a>
+
+</body>
+</html>

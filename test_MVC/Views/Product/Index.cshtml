@@ -1,0 +1,181 @@
+@model List<ProductModel>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Результат поиска</title>
+    <style>
+  
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #007BFF;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007BFF !important; 
+            color: #fff !important;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        /* Стили для формы фильтрации */
+        .filter-form {
+            margin-bottom: 20px;
+        }
+
+        .filter-form label {
+            margin-right: 10px;
+        }
+
+        .filter-form button {
+            margin-top: 10px;
+        }
+
+        .btn-go-to-categories {
+            margin-left: 10px;
+        }
+
+        #categoryId {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #filterButton {
+            padding: 8px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #filterButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <a asp-controller="User" asp-action="Login" class="logout-button">Выход</a>
+    <h1>Список продуктов</h1>
+
+    <form asp-controller="Product" asp-action="Search" method="post" class="filter-form">
+        <div class="form-group">
+            <label for="productName">Поиск по имени продукта:</label>
+            <input type="text" id="productName" name="ProductName" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Искать</button>
+    </form>
+    <div>
+        <label>Выберите категорию:</label>
+        <select id="categoryId">
+            <option value="">Все категории</option>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
+        </select>
+        <button id="filterButton">Фильтровать</button>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Наименование продукта</th>
+                <th>Цена</th>
+                <th>Описание</th>
+                <th>Категория</th>
+                <th>Примечание общее</th>
+                @if (!User.IsInRole("user"))
+                {
+                    <th>Примечание специальное</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in ViewBag.Products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Price</td>
+                    <td>@product.Description</td>
+                    <td>@product.Category.Name</td>
+                    <td>@product.NoteGeneral</td>
+                    @if (!User.IsInRole("user"))
+                    {
+                        <td>@product.NoteSpecial</td>
+                    }
+                    <td>
+                        <a asp-controller="Product" asp-action="EditProduct" asp-route-id="@product.Id">Редактировать</a>
+                    </td>
+                    <td>
+                            @if (!User.IsInRole("user"))
+    {
+                        <a asp-controller="Product" asp-action="DeleteProduct" asp-route-id="@product.Id">Удалить</a> 
+    }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (User.IsInRole("admin"))
+    {
+        <p><a asp-controller="User" asp-action="ManageUsers">Управление пользователями</a></p>
+    }
+    <a asp-controller="Product" asp-action="CreateProduct" class="btn btn-success">Добавить продукт</a>
+    @if (!User.IsInRole("user"))
+    {
+        <a asp-controller="Category" asp-action="Index" class="btn btn-secondary btn-go-to-categories">Перейти к списку категорий</a>
+    }
+
+    @section scripts {
+    <script>
+        document.getElementById("filterButton").addEventListener("click", function () {
+            var categoryId = document.getElementById("categoryId").value;
+            window.location.href = "/Product/Filter?categoryId=" + categoryId;
+        });
+    </script>
+    }
+</body>
+</html>

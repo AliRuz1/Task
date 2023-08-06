@@ -1,0 +1,37 @@
+@model List<CategoryModel>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список категорий</title>
+</head>
+<body>
+    <h1>Список категорий</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Наименование категории</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in ViewBag.Categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>
+                        <a asp-controller="Category" asp-action="EditCategory" asp-route-id="@category.Id">Редактировать</a>
+                    </td>
+                    <td>
+                        <a asp-controller="Category" asp-action="DeleteCategory" asp-route-id="@category.Id">Удалить</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-controller="Category" asp-action="AddCategory" class="btn btn-success">Добавить категорию</a>
+      <a asp-controller="Product" asp-action="Index" class="btn btn-secondary">Перейти к списку продуктов</a>
+
+</body>
+</html>
